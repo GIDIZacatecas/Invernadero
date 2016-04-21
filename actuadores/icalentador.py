@@ -6,13 +6,13 @@ import time
 from random import randint
 from threading import Thread
 
-class icalentador(object):
+class iCalentador(object):
 
     def __init__(self):
 
         logging.info('Invernadero Calentador')
 
-    def iVentiladorPrender(self, estado):
+    def iCalentadorPrender(self, estado):
         self.estado = ~ estado
 
     def iCalentadorEstado(self):
