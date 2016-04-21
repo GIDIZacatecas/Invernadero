@@ -40,10 +40,34 @@ class Ventilador(Resource):
         self.iventilador.iVentiladorPrender(valor)
         estado = self.iventilador.iVentiladorEstado()
         return {'ventilador': estado}
+        
+class Calentador(Resource):
 
+    def __init__(self):
+        self.icalentador = iCalentador()
+
+    def get(self, valor):
+        self.icalentador.iCalentadorPrender(valor)
+        estado = self.icalentador.iCalentadorEstado()
+        return {'calentador': estado}
+        
+class Bomba(Resource):
+
+    def __init__(self):
+        self.ibomba = iBomba()
+
+    def get(self, valor):
+        self.ibomba.iBombaPrender(valor)
+        estado = self.ibomba.iBombaEstado()
+        return {'bomba': estado}
+        
 api.add_resource(Temperatura, '/temperatura')
 api.add_resource(Humedad, '/humedad')
 api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
+api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
+api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
