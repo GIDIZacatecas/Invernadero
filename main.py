@@ -4,10 +4,22 @@ from flask import Flask
 from flask_restful import Resource, Api
 
 from sensores.itemperatura import iTemperatura
+from sensores.iHumedad import iHumedad
 from actuadores.iventilador import iVentilador
 
 app = Flask(__name__)
 api = Api(app)
+
+class Humedad(Resource):
+
+    def __init__(self):
+        self.iHumedad = iHumedad()
+        super(Humedad, self).__init__()
+
+    def get(self):
+        humedad = self.ihumedad.iHumedadLectura()
+        return {'Humedad': humedad}
+
 
 class Temperatura(Resource):
 
@@ -30,6 +42,7 @@ class Ventilador(Resource):
         return {'ventilador': estado}
 
 api.add_resource(Temperatura, '/temperatura')
+api.add_resource(Humedad, '/humedad')
 api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
 
 if __name__ == '__main__':
