@@ -3,8 +3,10 @@
 from flask import Flask
 from flask_restful import Resource, Api
 
+from sensores.ihumedad import iHumedad
 from sensores.itemperatura import iTemperatura
-from sensores.iHumedad import iHumedad
+from actuadores.ibomba import iBomba
+from actuadores.icalentador import iCalentador
 from actuadores.iventilador import iVentilador
 
 app = Flask(__name__)
@@ -13,7 +15,7 @@ api = Api(app)
 class Humedad(Resource):
 
     def __init__(self):
-        self.iHumedad = iHumedad()
+        self.ihumedad = iHumedad()
         super(Humedad, self).__init__()
 
     def get(self):
@@ -31,16 +33,16 @@ class Temperatura(Resource):
         temperatura = self.itemperatura.iTemperaturaLectura()
         return {'temperatura': temperatura}
 
-class Ventilador(Resource):
+class Bomba(Resource):
 
     def __init__(self):
-        self.iventilador = iVentilador()
+        self.ibomba = iBomba()
 
     def get(self, valor):
-        self.iventilador.iVentiladorPrender(valor)
-        estado = self.iventilador.iVentiladorEstado()
-        return {'ventilador': estado}
-        
+        self.ibomba.iBombaPrender(valor)
+        estado = self.ibomba.iBombaEstado()
+        return {'bomba': estado}        
+
 class Calentador(Resource):
 
     def __init__(self):
@@ -51,23 +53,21 @@ class Calentador(Resource):
         estado = self.icalentador.iCalentadorEstado()
         return {'calentador': estado}
         
-class Bomba(Resource):
+class Ventilador(Resource):
 
     def __init__(self):
-        self.ibomba = iBomba()
+        self.iventilador = iVentilador()
 
     def get(self, valor):
-        self.ibomba.iBombaPrender(valor)
-        estado = self.ibomba.iBombaEstado()
-        return {'bomba': estado}
+        self.iventilador.iVentiladorPrender(valor)
+        estado = self.iventilador.iVentiladorEstado()
+        return {'ventilador': estado}
         
 api.add_resource(Temperatura, '/temperatura')
 api.add_resource(Humedad, '/humedad')
 api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
 api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
 api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

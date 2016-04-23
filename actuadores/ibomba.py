@@ -10,7 +10,7 @@ class iBomba(object):
 
     def __init__(self):
 
-        logging.info('Invernadero Bomba de agua')
+        logging.info('Invernadero Bomba de Agua')
 
     def iBombaPrender(self, estado):
         self.estado = ~ estado
