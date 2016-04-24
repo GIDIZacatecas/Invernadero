@@ -15,14 +15,14 @@ class iTemperatura(object):
         logging.info('Invernadero Temperatura')
         self.temperatura = 0
 
-        self.grovetemperature = grove.GroveTemp(0)
+        self.grovetemperatura = grove.GroveTemp(0)
 
         thread = Thread(target=self.iTemperaturaActualizar)
         thread.start()
 
     def iTemperaturaActualizar(self):
         while True:
-            self.temperature = self.grovetemperature.value()
+            self.temperatura = self.grovetemperatura.value()
             #self.temperatura = randint(20,40)
 
     def iTemperaturaLectura(self):
