@@ -48,9 +48,9 @@ class Calentador(Resource):
         self.icalentador = iCalentador()
 
     def get(self, valor):
-        self.icalentador.iCalentadorPrender(valor)
-        estado = self.icalentador.iCalentadorEstado()
-        return {'calentador': estado}
+        if valor != 2:
+            self.icalentador.iCalentadorPrender(valor)
+        return {'calentador': valor}
         
 class Ventilador(Resource):
 
@@ -58,9 +58,9 @@ class Ventilador(Resource):
         self.iventilador = iVentilador()
 
     def get(self, valor):
-        self.iventilador.iVentiladorPrender(valor)
-        estado = self.iventilador.iVentiladorEstado()
-        return {'ventilador': estado}
+        if valor != 2:
+            self.iventilador.iVentiladorPrender(valor)
+        return {'ventilador': valor}
         
 api.add_resource(Humedad, '/humedad')
 api.add_resource(Temperatura, '/temperatura')
