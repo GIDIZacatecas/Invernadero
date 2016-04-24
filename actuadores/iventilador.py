@@ -7,7 +7,7 @@ class iVentilador(object):
 
     def __init__(self):
         logging.info('Invernadero Ventilador')
-        self.ventilador = mraa.Gpio(3)
+        self.ventilador = mraa.Gpio(4)
         self.ventilador.dir(mraa.DIR_OUT)
         self.estado = 0
 
