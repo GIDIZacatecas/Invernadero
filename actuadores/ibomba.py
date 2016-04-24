@@ -1,19 +1,20 @@
 #!/usr/bin/python
 
 import logging
-import time
+import mraa
 
-from random import randint
-from threading import Thread
+from flask_restful import Resource
 
-class iBomba(object):
+class iBomba():
 
     def __init__(self):
-
         logging.info('Invernadero Bomba de Agua')
+        self.bomba = mraa.Gpio(2)
+        self.bomba.dir(mraa.DIR_OUT)
+        self.estado = 0
 
     def iBombaPrender(self, estado):
-        self.estado = ~ estado
+        self.bomba.write(estado)
 
     def iBombaEstado(self):
         return self.estado

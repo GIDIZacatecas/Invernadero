@@ -22,7 +22,6 @@ class Humedad(Resource):
         humedad = self.ihumedad.iHumedadLectura()
         return {'Humedad': humedad}
 
-
 class Temperatura(Resource):
 
     def __init__(self):
@@ -39,9 +38,9 @@ class Bomba(Resource):
         self.ibomba = iBomba()
 
     def get(self, valor):
-        self.ibomba.iBombaPrender(valor)
-        estado = self.ibomba.iBombaEstado()
-        return {'bomba': estado}        
+        if valor != 2:
+            self.ibomba.iBombaPrender(valor)
+        return {'bomba': valor}
 
 class Calentador(Resource):
 
@@ -63,11 +62,11 @@ class Ventilador(Resource):
         estado = self.iventilador.iVentiladorEstado()
         return {'ventilador': estado}
         
-api.add_resource(Temperatura, '/temperatura')
 api.add_resource(Humedad, '/humedad')
-api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
-api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
+api.add_resource(Temperatura, '/temperatura')
 api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
+api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
+api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
