@@ -1,19 +1,18 @@
 #!/usr/bin/python
 
 import logging
-import time
-
-from random import randint
-from threading import Thread
+import mraa
 
 class iVentilador(object):
 
     def __init__(self):
-
         logging.info('Invernadero Ventilador')
+        self.ventilador = mraa.Gpio(3)
+        self.ventilador.dir(mraa.DIR_OUT)
+        self.estado = 0
 
     def iVentiladorPrender(self, estado):
-        self.estado = ~ estado
+        self.ventilador.write(estado)
 
     def iVentiladorEstado(self):
         return self.estado
