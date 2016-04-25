@@ -10,11 +10,11 @@ class iBomba():
     def __init__(self):
         logging.info('Invernadero Bomba de Agua')
         self.bomba = mraa.Gpio(2)
-        self.bomba.dir(mraa.DIR_OUT)
         self.estado = 0
 
     def iBombaPrender(self, estado):
+        self.bomba.dir(mraa.DIR_OUT)
         self.bomba.write(estado)
 
     def iBombaEstado(self):
-        return self.estado
+        return self.bomba.read()
