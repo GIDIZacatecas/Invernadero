@@ -24,4 +24,16 @@ class iHumedad(object):
     def iHumedadLectura(self):
         return self.humedad
 
+# Connect the Grove Moisture Sensor to analog port A1
+# SIG,NC,VCC,GND
+sensor = 0
+ #posible codigo grove 
+#while True:
+ #   try:
+        #print grovepi.analogRead(sensor)
+        #time.sleep(.5)
+    #except KeyboardInterrupt:
+        #break
+    #except IOError:
+        #print "Error"
 # End of File
