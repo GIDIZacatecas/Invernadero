@@ -13,6 +13,7 @@ class iHumedad(object):
 
         logging.info('Invernadero Humedad')
         self.humedad = 0
+        self.humedadumbral = 2
 
         thread = Thread(target=self.iHumedadActualizar)
         thread.start()
@@ -23,6 +24,12 @@ class iHumedad(object):
 
     def iHumedadLectura(self):
         return self.humedad
+
+    def iHumedadUmbralEscritura(self, valor):
+        self.humedadumbral = valor
+
+    def iHumedadUmbralLectura(self):
+        return self.humedadumbral
 
 # Connect the Grove Moisture Sensor to analog port A1
 # SIG,NC,VCC,GND

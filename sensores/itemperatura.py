@@ -14,6 +14,8 @@ class iTemperatura(object):
 
         logging.info('Invernadero Temperatura')
         self.temperatura = 0
+        self.temperaturamaxima = 27
+        self.temperaturaminima = 13
 
         self.grovetemperatura = grove.GroveTemp(0)
 
@@ -27,5 +29,17 @@ class iTemperatura(object):
 
     def iTemperaturaLectura(self):
         return self.temperatura
+
+    def iTemperaturaMaximaEscritura(self, valor):
+        self.temperaturamaxima = valor
+
+    def iTemperaturaMaximaLectura(self):
+        return self.temperaturamaxima
+
+    def iTemperaturaMinimaEscritura(self, valor):
+        self.temperaturaminima = valor
+
+    def iTemperaturaMinimaLectura(self):
+        return self.temperaturaminima
 
 # End of File

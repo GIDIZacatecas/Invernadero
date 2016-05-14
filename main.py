@@ -20,6 +20,29 @@ api = Api(app)
 
 ihumedad = iHumedad()
 itemperatura = iTemperatura()
+ifuncion = 1
+
+class Funcion(Resource):
+
+    def __init__(self):
+        pass
+
+    def get(self, valor):
+        global ifuncion
+        if valor == 1:
+            ifuncion = valor
+        else:
+            ifuncion = 0
+        return valor
+        
+class FuncionEstado(Resource):
+
+    def __init__(self):
+        pass
+
+    def get(self):
+        global ifuncion
+        return ifuncion
 
 class Humedad(Resource):
 
@@ -162,6 +185,9 @@ def functionMain():
     while True:
         time.sleep(5)
 
+api.add_resource(Funcion, '/funcion/<int:valor>', endpoint = 'funcion')
+api.add_resource(FuncionEstado, '/funcion/estado')
+
 api.add_resource(Humedad, '/humedad')
 api.add_resource(HumedadUmbral, '/humedad/umbral/<int:valor>', endpoint = 'humedadumbral')
 api.add_resource(HumedadUmbralEstado, '/humedad/umbral/estado')
@@ -170,6 +196,7 @@ api.add_resource(TemperaturaMaxima, '/temperatura/maxima/<int:valor>', endpoint 
 api.add_resource(TemperaturaMaximaEstado, '/temperatura/maxima/estado')
 api.add_resource(TemperaturaMinima, '/temperatura/minima/<int:valor>', endpoint = 'temperaturaminima')
 api.add_resource(TemperaturaMinimaEstado, '/temperatura/minima/estado')
+
 api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
 api.add_resource(BombaEstado, '/bomba/estado')
 api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
