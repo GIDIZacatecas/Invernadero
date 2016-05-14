@@ -30,6 +30,15 @@ class Humedad(Resource):
         humedad = ihumedad.iHumedadLectura()
         return humedad
 
+class HumedadUmbral(Resource):
+
+    def __init__(self):
+        pass
+
+    def get(self, valor):
+        ihumedad.
+        return valor
+
 class Temperatura(Resource):
 
     def __init__(self):
@@ -38,6 +47,24 @@ class Temperatura(Resource):
     def get(self):
         temperatura = itemperatura.iTemperaturaLectura()
         return temperatura
+
+class TemperaturaMaxima(Resource):
+
+    def __init__(self):
+        pass
+
+    def get(self, valor):
+        itemperatura.iTemperaturaMaximaEscritura(valor)
+        return valor
+
+class TemperaturaMinima(Resource):
+
+    def __init__(self):
+        pass
+
+    def get(self, valor):
+        itemperatura.iTemperaturaMinimaEscritura(valor)
+        return valor
 
 class Bomba(Resource):
 
@@ -112,7 +139,10 @@ def functionMain():
         time.sleep(5)
 
 api.add_resource(Humedad, '/humedad')
+api.add_resource(HumedadUmbral, '/humedad/umbral/<int:valor>', endpoint = 'humedadumbral')
 api.add_resource(Temperatura, '/temperatura')
+api.add_resource(TemperaturaMaxima, '/temperatura/maxima/<int:valor>', endpoint = 'temperaturamaxima')
+api.add_resource(TemperaturaMinima, '/temperatura/minima/<int:valor>', endpoint = 'temperaturaminima')
 api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
 api.add_resource(BombaEstado, '/bomba/estado')
 api.add_resource(Calentador, '/calentador/<int:valor>', endpoint = 'calentador')
