@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import time
+
 from flask import Flask
 from flask_restful import Resource, Api
 
@@ -9,28 +11,33 @@ from actuadores.ibomba import iBomba
 from actuadores.icalentador import iCalentador
 from actuadores.iventilador import iVentilador
 
+from threading import Thread
+
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
 app = Flask(__name__)
 api = Api(app)
+
+ihumedad = iHumedad()
+itemperatura = iTemperatura()
 
 class Humedad(Resource):
 
     def __init__(self):
-        self.ihumedad = iHumedad()
         super(Humedad, self).__init__()
 
     def get(self):
-        humedad = self.ihumedad.iHumedadLectura()
-        return {'Humedad': humedad}
+        humedad = ihumedad.iHumedadLectura()
+        return humedad
 
 class Temperatura(Resource):
 
     def __init__(self):
-        self.itemperatura = iTemperatura()
         super(Temperatura, self).__init__()
 
     def get(self):
-        temperatura = self.itemperatura.iTemperaturaLectura()
-        return {'temperatura': temperatura}
+        temperatura = itemperatura.iTemperaturaLectura()
+        return temperatura
 
 class Bomba(Resource):
 
@@ -40,7 +47,7 @@ class Bomba(Resource):
     def get(self, valor):
         if valor != 2:
             self.ibomba.iBombaPrender(valor)
-        return {'bomba': valor}
+        return valor
 
 class BombaEstado(Resource):
 
@@ -49,7 +56,7 @@ class BombaEstado(Resource):
 
     def get(self):
         valor = self.ibomba.iBombaEstado()
-        return {'bomba': valor}
+        return valor
 
 class Calentador(Resource):
 
@@ -59,7 +66,7 @@ class Calentador(Resource):
     def get(self, valor):
         if valor != 2:
             self.icalentador.iCalentadorPrender(valor)
-        return {'calentador': valor}
+        return valor
 
 class CalentadorEstado(Resource):
 
@@ -68,7 +75,7 @@ class CalentadorEstado(Resource):
 
     def get(self):
         valor = self.icalentador.iCalentadorEstado()
-        return {'calentador': valor}
+        return valor
         
 class Ventilador(Resource):
 
@@ -78,7 +85,7 @@ class Ventilador(Resource):
     def get(self, valor):
         if valor != 2:
             self.iventilador.iVentiladorPrender(valor)
-        return {'ventilador': valor}
+        return valor
         
 class VentiladorEstado(Resource):
 
@@ -87,8 +94,23 @@ class VentiladorEstado(Resource):
 
     def get(self):
         valor = self.iventilador.iVentiladorEstado()
-        return {'ventilador': valor}
-        
+        return valor
+
+def funcionHumedad(bot, update):
+    humedad = ihumedad.iHumedadLectura()
+    bot.sendMessage(update.message.chat_id, text='Humedad ' + str(humedad))
+
+def funcionTemperatura(bot, update):
+    temperatura = itemperatura.iTemperaturaLectura()
+    bot.sendMessage(update.message.chat_id, text='Temperatura ' + str(temperatura))
+
+def funcionEcho(bot, update):
+    bot.sendMessage(update.message.chat_id, text=update.message.text)
+
+def functionMain():
+    while True:
+        time.sleep(5)
+
 api.add_resource(Humedad, '/humedad')
 api.add_resource(Temperatura, '/temperatura')
 api.add_resource(Bomba, '/bomba/<int:valor>', endpoint = 'bomba')
@@ -99,4 +121,19 @@ api.add_resource(Ventilador, '/ventilador/<int:valor>', endpoint = 'ventilador')
 api.add_resource(VentiladorEstado, '/ventilador/estado')
 
 if __name__ == '__main__':
+
+    threadmain = Thread(target=functionMain)
+    threadmain.start()
+
+    updater = Updater("216787884:AAHv_6IIlANC-yuFJnyWBXPNUQJ9Nm0pRcY")
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("humedad", funcionHumedad))
+    dp.add_handler(CommandHandler("temperatura", funcionTemperatura))
+    dp.add_handler(MessageHandler([Filters.text], funcionEcho))
+
+    updater.start_polling()
+    #updater.idle()
+
+    #app.run(host='0.0.0.0', debug=True, threaded=True)
     app.run(host='0.0.0.0', debug=True)
