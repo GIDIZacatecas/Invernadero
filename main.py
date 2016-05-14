@@ -15,12 +15,12 @@ from threading import Thread
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-app = Flask(__name__)
-api = Api(app)
-
 ihumedad = iHumedad()
 itemperatura = iTemperatura()
 ifuncion = 1
+
+app = Flask(__name__)
+api = Api(app)
 
 class Funcion(Resource):
 
@@ -183,6 +183,7 @@ def funcionEcho(bot, update):
 
 def functionMain():
     while True:
+        print ifuncion
         time.sleep(5)
 
 api.add_resource(Funcion, '/funcion/<int:valor>', endpoint = 'funcion')
@@ -217,7 +218,8 @@ if __name__ == '__main__':
     dp.add_handler(MessageHandler([Filters.text], funcionEcho))
 
     updater.start_polling()
-    #updater.idle()
 
-    #app.run(host='0.0.0.0', debug=True, threaded=True)
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
+    #app.run(host='0.0.0.0', debug=True)
+
+    updater.idle()
