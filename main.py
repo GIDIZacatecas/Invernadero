@@ -17,6 +17,9 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 ihumedad = iHumedad()
 itemperatura = iTemperatura()
+ibomba = iBomba()
+icalentador = iCalentador()
+iventilador = iVentilador()
 ifuncion = 1
 
 app = Flask(__name__)
@@ -183,8 +186,32 @@ def funcionEcho(bot, update):
 
 def functionMain():
     while True:
-        print ifuncion
-        time.sleep(5)
+        temperatura = itemperatura.iTemperaturaLectura()
+        humedad = ihumedad.iHumedadLectura()
+        print temperatura, humedad
+
+        maxima = itemperatura.iTemperaturaMaximaLectura()
+        minima = itemperatura.iTemperaturaMinimaLectura()
+        print "Temperatura Maxima " + str(maxima)
+        print "Temperatura Minima " + str(minima)
+
+        if humedad == 0 and temperatura != 100:
+            print "Dispositivos Prendidos"
+            ibomba.iBombaPrender(1)
+            icalentador.iCalentadorPrender(1)
+            iventilador.iVentiladorPrender(1)
+        elif humedad > 0 and temperatura != 100:
+            print "Dispositivos Apagados"
+            ibomba.iBombaPrender(0)
+            icalentador.iCalentadorPrender(0)
+            iventilador.iVentiladorPrender(0)
+        
+        time.sleep(1)
+
+'''
+http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/ifstatements.html
+http://learnpythonthehardway.org/book/ex28.html
+'''
 
 api.add_resource(Funcion, '/funcion/<int:valor>', endpoint = 'funcion')
 api.add_resource(FuncionEstado, '/funcion/estado')
@@ -219,7 +246,7 @@ if __name__ == '__main__':
 
     updater.start_polling()
 
-    app.run(host='0.0.0.0', debug=True, threaded=True)
-    #app.run(host='0.0.0.0', debug=True)
+    #app.run(host='0.0.0.0', debug=True, threaded=True)
+    app.run(host='0.0.0.0', debug=False)
 
     updater.idle()

@@ -2,6 +2,7 @@
 #!/usr/bin/python
 
 import logging
+import mraa
 import time
 
 from random import randint
@@ -15,12 +16,15 @@ class iHumedad(object):
         self.humedad = 0
         self.humedadumbral = 2
 
+        self.grovehumedad = mraa.Aio(0)
+
         thread = Thread(target=self.iHumedadActualizar)
         thread.start()
 
     def iHumedadActualizar(self):
         while True:
-            self.humedad = randint(20,40)
+            self.humedad = self.grovehumedad.read()
+            #self.humedad = randint(20,40)
 
     def iHumedadLectura(self):
         return self.humedad
