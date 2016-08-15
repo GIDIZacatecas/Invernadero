@@ -13,10 +13,10 @@ class iHumedad(object):
     def __init__(self):
 
         logging.info('Invernadero Humedad')
-        self.humedad = 0
-        self.humedadumbral = 2
+        self.humedad = 325
+        self.humedadumbral = 511
 
-        self.grovehumedad = mraa.Aio(0)
+        self.grovehumedad = mraa.Aio(4)
 
         thread = Thread(target=self.iHumedadActualizar)
         thread.start()
