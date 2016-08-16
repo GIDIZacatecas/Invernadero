@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
 import time
+import cv2
+import numpy as np
 
-from flask import Flask
+from flask import Flask, Response
 from flask_restful import Resource, Api
 
 from sensores.ihumedad import iHumedad
@@ -26,8 +28,25 @@ ifoco = iFoco()
 ifuncion = 1
 segundos = 60
 duracionfoco = 0
+
 app = Flask(__name__)
 api = Api(app)
+
+class Camera(object):
+    def __init__(self):
+        self.cap = cv2.VideoCapture(0)
+        # Reset camera capture size for faster processing
+        self.cap.set(3,640)
+        self.cap.set(4,480)
+
+    def get_frame(self):
+        ret, frame = self.cap.read()
+        # Apply laplacian edge detection to image
+        #laplacian = cv2.Laplacian(frame,cv2.CV_64F)
+        # Write out original and edge detected images at once
+        #cv2.imwrite('Gidi.jpg',np.hstack((frame,laplacian)))
+        cv2.imwrite('Gidi.jpg',frame)
+        return open('Gidi.jpg', 'rb').read()
 
 class Funcion(Resource):
 
@@ -269,8 +288,12 @@ def funcionProximidad(bot, update):
     proximidad = iproximidad.iProximidadLectura()
     bot.sendMessage(update.message.chat_id, text='Humedad ' + str(proximidad))
 
+def funcionFoto(bot, update):
+    bot.sendPhoto(update.message.chat_id, photo=open('/home/Invernadero/Gidi.jpg', 'rb'))
+
 def funcionEcho(bot, update):
     bot.sendMessage(update.message.chat_id, text=update.message.text)
+
 
 def functionMain():
     while True:
@@ -399,6 +422,17 @@ api.add_resource(BombaDuracionMinEstado, '/bomba/duracion/minutos/estado')
 api.add_resource(BombaDuracionHor, '/bomba/duracion/horas/<int:valor>', endpoint = 'bombaduracionhor')
 api.add_resource(BombaDuracionHorEstado, '/bomba/duracion/horas/estado')
 
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/camara')
+def video_feed():
+    return Response(gen(Camera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
 if __name__ == '__main__':
 
     threadmain = Thread(target=functionMain)
@@ -407,6 +441,7 @@ if __name__ == '__main__':
     updater = Updater("216787884:AAHv_6IIlANC-yuFJnyWBXPNUQJ9Nm0pRcY")
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("foto", funcionFoto))
     dp.add_handler(CommandHandler("humedad", funcionHumedad))
     dp.add_handler(CommandHandler("temperatura", funcionTemperatura))
     dp.add_handler(CommandHandler("proximidad", funcionProximidad))
@@ -418,4 +453,3 @@ if __name__ == '__main__':
     #app.run(host='0.0.0.0', debug=False)
 
     updater.idle()
-#                                                                                                                                                                                                                                                                                                                                                                                m1íˆíí÷¼>œu8tì4ÿ¸Þ©ß9ÿIãÓD—b×ÐgéÏ½ÝÝŸz„{>ôò÷¶öñô5õsõ7pÔaÿR7È>X7Ä1T?Ì9Ü8Â=Ò<Ê7Ú>&8öq\l¼{Bjb`RnrtJujfZgzeÆdf{ÖfödÎmîfÞf
